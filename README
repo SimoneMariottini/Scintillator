@@ -1,0 +1,4 @@
+Every time you reopen the terminal, send the following command:
+- xhost +localhost
+
+Everything must be executed in the ~/Geant4 directory and with the Docker desktop app open

@@ -1,0 +1,17 @@
+
+#First initialize the run
+/run/initialize
+#Simulate 26MeV positive muons
+/gps/particle mu+
+
+/gps/position 0. 0.5 -26. mm
+/gps/direction 0 0 1
+
+/gps/ene/type Mono
+/gps/ene/mono 26 MeV
+
+/vis/disable
+
+/run/printProgress 100
+
+/run/beamOn 1000

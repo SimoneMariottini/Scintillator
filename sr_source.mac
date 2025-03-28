@@ -1,0 +1,13 @@
+#Simulate Strontium source
+
+/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+60 year
+
+/gps/particle ion
+/gps/ion 38 90 0
+
+/gps/position 0. 0.5 -26. mm
+
+/gps/ene/type Mono
+/gps/ene/mono 0 MeV
+
+#/vis/disable

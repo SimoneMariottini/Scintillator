@@ -1,0 +1,63 @@
+# This file permits to customize, with commands,
+# the menu bar of the G4UIXm, G4UIQt, G4UIWin32 sessions.
+# It has no effect with G4UIterminal.
+
+# File menu :
+/gui/addMenu file File
+/gui/addButton file Quit exit
+
+# Run menu :
+/gui/addMenu run Run
+/gui/addButton run "short run" "/control/execute run_short.mac"
+/gui/addButton run "long run" "/control/execute run_long.mac"
+
+# Beam menu :
+/gui/addMenu beam Beam
+/gui/addButton beam "Reset" "/run/initialize"
+/gui/addButton beam "Fire 1" "/run/beamOn 1"
+/gui/addButton beam "Fire 10" "/run/beamOn 10"
+/gui/addButton beam "Fire 100" "/run/beamOn 100"
+
+# Particle menu :
+/gui/addMenu part Particle
+/gui/addButton part "0.5 eV"  "/gps/energy 0.5 eV"
+/gui/addButton part "1 MeV"  "/gps/energy 1 MeV"
+/gui/addButton part "10 MeV"   "/gps/energy 10 MeV"
+/gui/addButton part "100 MeV"  "/gps/energy 100 MeV"
+/gui/addButton part "e-"      "/gps/particle e-"
+/gui/addButton part "e+"      "/gps/particle e+"
+/gui/addButton part "mu-"  "/gps/particle mu-"
+/gui/addButton part "mu+"  "/gps/particle mu+"
+/gui/addButton part "pi0"     "/gps/particle pi0"
+/gui/addButton part "pi+"     "/gps/particle pi+"
+/gui/addButton part "neutron" "/gps/particle neutron"
+/gui/addButton part "proton"  "/gps/particle proton"
+/gui/addButton part "gamma" "/gps/particle gamma"
+/gui/addButton part "opticalphoton" "/gps/particle opticalphoton"
+
+# Beam direction menu:
+/gui/addMenu beamdir Direction
+/gui/addButton beamdir "Along X" "/gps/direction 1 0 0"
+/gui/addButton beamdir "Along Y" "/gps/direction 0 1 0"
+/gui/addButton beamdir "Along Z" "/gps/direction 0 0 1"
+
+# Beam position menu:
+/gui/addMenu beampos Position
+/gui/addButton beampos "Collimated" "/gps/position 0. 0.5 -26. mm"
+
+/gui/addMenu source Source
+/gui/addButton source "Sr90" "/control/execute sr_source.mac"
+
+#
+# Viewer menu :
+/gui/addMenu viewer Viewer
+/gui/addButton viewer "Set style surface" "/vis/viewer/set/style surface"
+/gui/addButton viewer "Set style wireframe" "/vis/viewer/set/style wireframe"
+/gui/addButton viewer "Refresh viewer" "/vis/viewer/refresh"
+/gui/addButton viewer "Update viewer (interaction or end-of-file)" "/vis/viewer/update"
+/gui/addButton viewer "Flush viewer (= refresh + update)" "/vis/viewer/flush"
+/gui/addButton viewer "Update scene" "/vis/scene/notifyHandlers"
+#
+# To limit the output flow in the "dump" widget :
+/run/printProgress 100
+#
