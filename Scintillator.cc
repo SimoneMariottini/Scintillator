@@ -10,7 +10,6 @@
 #include "G4VisExecutive.hh"
 #include "FTFP_BERT.hh"
 #include "Randomize.hh"
-#include <ctime>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -28,7 +27,6 @@ namespace {
 
 int main(int argc,char** argv)
 {
-  clock_t start_time = clock();
   // Evaluate arguments
   //
   if ( argc > 7 ) {
@@ -38,7 +36,7 @@ int main(int argc,char** argv)
 
   G4String macro;
   G4String session;
-  G4bool verboseBestUnits = false;
+  G4int verboseLevel = 0;
   G4int nThreads = 1;
   for ( G4int i=1; i<argc; i=i+2 ) {
     if      ( G4String(argv[i]) == "-m" ) macro = argv[i+1];
@@ -48,9 +46,8 @@ int main(int argc,char** argv)
       nThreads = G4UIcommand::ConvertToInt(argv[i+1]);
     }
 #endif
-    else if ( G4String(argv[i]) == "-vDefault" ) {
-      verboseBestUnits = true;
-      --i;  // this option is not followed with a parameter
+    else if ( G4String(argv[i]) == "-v" ) {
+      verboseLevel = G4UIcommand::ConvertToInt(argv[i+1]);
     }
     else {
       PrintUsage();
@@ -63,12 +60,6 @@ int main(int argc,char** argv)
   G4UIExecutive* ui = nullptr;
   if ( ! macro.size() ) {
     ui = new G4UIExecutive(argc, argv, session);
-  }
-
-  // Use G4SteppingVerboseWithUnits
-  if ( verboseBestUnits ) {
-    G4int precision = 5;
-    G4SteppingVerbose::UseBestUnit(precision);
   }
 
   // Construct the default run manager
@@ -86,13 +77,11 @@ int main(int argc,char** argv)
   auto detConstruction = new DetectorConstruction();
   runManager->SetUserInitialization(detConstruction);
 
-  auto physicsList = new ModularPhysicsList();
+  auto physicsList = new ModularPhysicsList(verboseLevel);
   runManager->SetUserInitialization(physicsList);
 
   auto actionInitialization = new ActionInitialization(detConstruction);
   runManager->SetUserInitialization(actionInitialization);
-
-  runManager->Initialize();
 
   
   // Initialize visualization
@@ -104,11 +93,6 @@ int main(int argc,char** argv)
   // Get the pointer to the User Interface manager
   auto UImanager = G4UImanager::GetUIpointer();
 
-  clock_t end_time = clock();
-
-  double elapsed_time = double(end_time - start_time) / CLOCKS_PER_SEC;
-  G4cout << "----------------------------> Geometry laoding time: " << elapsed_time << " seconds" << G4endl;
-
   // Process macro or start UI session
   //
   if ( macro.size() ) {
@@ -118,17 +102,13 @@ int main(int argc,char** argv)
   }
   else  {
     // interactive mode : define UI session
-    UImanager->ApplyCommand("/control/execute init_vis.mac");
+    UImanager->ApplyCommand("/control/execute mac/init_vis.mac");
     if (ui->IsGUI()) {
-      UImanager->ApplyCommand("/control/execute gui.mac");
+      UImanager->ApplyCommand("/control/execute mac/gui.mac");
     }
     ui->SessionStart();
     delete ui;
   }
-
-  end_time = clock();
-  elapsed_time = double(end_time - start_time) / CLOCKS_PER_SEC;
-  G4cout << "----------------------------> Simulation time: " << elapsed_time << " seconds" << G4endl;
 
   // Job termination
   // Free the store: user actions, physics_list and detector_description are

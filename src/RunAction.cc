@@ -49,7 +49,6 @@ RunAction::RunAction()
     }
   
     analysisManager->OpenFile(fileName);
-    G4cout << "Using " << analysisManager->GetType() << G4endl;
     
   }
   

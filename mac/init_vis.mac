@@ -1,13 +1,21 @@
 # Macro file for the initialization of example B4
 # in interactive session
-#
+
 # Set some default verbose
 #
-/control/verbose 2
+/control/verbose 0
 /control/saveHistory
-/run/verbose 2
+/run/verbose 0
+/process/verbose 0
+/particle/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+/process/em/verbose    0
+/process/had/verbose    0
+/process/eLoss/verbose    0
+
 # Initialize kernel
 /run/initialize
-#
+
 # Visualization setting
-/control/execute vis.mac
+/control/execute mac/vis.mac

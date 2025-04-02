@@ -17,7 +17,7 @@
 class ModularPhysicsList : public G4VModularPhysicsList
 {
 public:
-    ModularPhysicsList();
+    ModularPhysicsList(G4int verboseLevel);
     ~ModularPhysicsList();
 };
 
