@@ -40,7 +40,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     G4Material* fAlluminum;
     //G4OpticalSurface* fAlluminumOpticalSurface;
 
-    G4bool fCheckOverlaps = true; // option to activate checking of volumes overlaps
+    G4bool fCheckOverlaps = false; // option to activate checking of volumes overlaps
 };
 
 //

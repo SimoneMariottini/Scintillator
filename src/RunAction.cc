@@ -33,11 +33,11 @@ RunAction::RunAction()
   
   void RunAction::BeginOfRunAction(const G4Run*)
   {
-  
+    
     // Get analysis manager
     auto analysisManager = G4AnalysisManager::Instance();
   
-    G4String fileName = "../Scintillator/scintillation.root";
+    G4String fileName = "/data/user/mariot_s/scintillation.root";
   
     analysisManager->OpenFile(fileName);
     G4cout << "Using " << analysisManager->GetType() << G4endl;

@@ -1,7 +1,7 @@
 
 #First initialize the run
 #/run/setRandomSeed 123456
-/run/initialize
+#/run/initialize
 #Simulate 26MeV positive muons
 /gps/particle mu+
 
@@ -14,5 +14,6 @@
 /vis/disable
 
 /run/printProgress 100
+/run/verbose 1
 
 /run/beamOn 100000

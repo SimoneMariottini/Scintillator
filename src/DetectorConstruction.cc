@@ -30,8 +30,8 @@
 
 #include "CLHEP/Units/SystemOfUnits.h"
 
-#define design 5
-#define coating 1
+#define design 1
+#define coating 0
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -337,7 +337,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     fAir,
     "World");
 
-  auto worldPV = new G4PVPlacement(nullptr,
+  fWorldPV = new G4PVPlacement(nullptr,
     G4ThreeVector(),
     worldLV,
     "World",                         
@@ -365,7 +365,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     fPolystyrene,  
     "Scintillator");  
 
-  new G4PVPlacement(nullptr,
+  fScintPV = new G4PVPlacement(nullptr,
     G4ThreeVector(), 
     scintillatorLV,    
     "Scintillator",   

@@ -17,13 +17,6 @@ else()
 endif()
 
 #----------------------------------------------------------------------------
-# Setup Geant4 include directories and compile definitions
-# Setup include directory for this project
-#
-include(${Geant4_USE_FILE})
-include_directories(${PROJECT_SOURCE_DIR}/header)
-
-#----------------------------------------------------------------------------
 # Locate sources and headers for this project
 # NB: headers are included so they will show up in IDEs
 #
@@ -33,8 +26,9 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/header/*.hh)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(scintillator Scintillator.cc ${sources} ${headers})
-target_link_libraries(scintillator ${Geant4_LIBRARIES})
+add_executable(Scintillator Scintillator.cc ${sources} ${headers})
+target_include_directories(Scintillator PRIVATE header)
+target_link_libraries(Scintillator PRIVATE ${Geant4_LIBRARIES})
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
@@ -42,17 +36,15 @@ target_link_libraries(scintillator ${Geant4_LIBRARIES})
 # relies on these scripts being in the current working directory.
 #
 set(SCINTILLATOR_SCRIPTS
-  Scintillator.out
-  Scintillator.in
-  gui.mac
-  init_vis.mac
-  plotHisto.C
-  plotNtuple.C
-  perspective.mac
-  vis.mac
-  run_short.mac
-  run_long.mac
-  sr_source.mac
+  mac/gui.mac
+  mac/init_vis.mac
+  mac/plotHisto.C
+  #mac/plotNtuple.C
+  mac/perspective.mac
+  mac/vis.mac
+  mac/run_short.mac
+  mac/run_long.mac
+  mac/sr_source.mac
   )
 
 foreach(_script ${SCINTILLATOR_SCRIPTS})
@@ -66,4 +58,4 @@ endforeach()
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS scintillator DESTINATION bin)
+#install(TARGETS Scintillator DESTINATION bin)
