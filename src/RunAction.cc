@@ -36,8 +36,17 @@ RunAction::RunAction()
     
     // Get analysis manager
     auto analysisManager = G4AnalysisManager::Instance();
-  
-    G4String fileName = "/data/user/mariot_s/scintillation.root";
+
+    G4String resultPath = std::getenv("RESULT");
+
+    G4String fileName;
+
+    if(resultPath){
+      fileName = resultPath + "/scintillation.root";
+    }
+    else{
+      fileName = "./scintillation.root";
+    }
   
     analysisManager->OpenFile(fileName);
     G4cout << "Using " << analysisManager->GetType() << G4endl;

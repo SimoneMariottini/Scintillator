@@ -67,7 +67,7 @@ int main(int argc,char** argv)
 
   // Use G4SteppingVerboseWithUnits
   if ( verboseBestUnits ) {
-    G4int precision = 4;
+    G4int precision = 5;
     G4SteppingVerbose::UseBestUnit(precision);
   }
 
@@ -106,7 +106,7 @@ int main(int argc,char** argv)
 
   clock_t end_time = clock();
 
-  double elapsed_time = double(end_time - start_time) / CLOCKS_PER_SEC / double(nThreads);
+  double elapsed_time = double(end_time - start_time) / CLOCKS_PER_SEC;
   G4cout << "----------------------------> Geometry laoding time: " << elapsed_time << " seconds" << G4endl;
 
   // Process macro or start UI session

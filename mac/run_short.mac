@@ -1,6 +1,3 @@
-
-#First initialize the run
-/run/initialize
 #Simulate 26MeV positive muons
 /gps/particle mu+
 
@@ -13,5 +10,6 @@
 /vis/disable
 
 /run/printProgress 100
+/run/verbose 1
 
 /run/beamOn 1000
