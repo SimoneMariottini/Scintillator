@@ -30,8 +30,8 @@
 
 #include "CLHEP/Units/SystemOfUnits.h"
 
-#define design 1
-#define coating 0
+#define design 4
+#define coating 1
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -314,7 +314,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   #if design == 1
 
   auto scintFilmThickness = 0.025*mm;
-  auto scintFilmLength = 24*mm;
+  auto scintFilmLength = 15*mm;
   auto guideWidth= 2*mm;
   auto guideHeight = 2.625*mm;
   
@@ -706,22 +706,26 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
   auto scintFilmThickness = 0.025*mm;
   auto scintFilmLength = 24*mm;
+
+  auto coatingThickness = 0.100*mm;
+
   auto guideWidth= 1.3*mm;
   auto guideHeight = 2*mm;
   auto guideAngle = pi/2. - 0.67;
+  auto guideLength = scintFilmLength - coatingThickness*4;
   
   auto SiPMHeight = 1.3*mm;
   auto SiPMWidth = 1*mm;
   auto SiPMLength = 1.3*mm;
-
-  auto coatingThickness = 0.100*mm;
+  G4int nSides = 4;
+  G4int nSiPM = 4;
 
   auto worldSizeX = 10*cm;
   auto worldSizeY = 10*cm;
   auto worldSizeZ = 10*cm;
 
   G4ThreeVector scintFilmPosition = G4ThreeVector(0., 0., 0.);
-  G4ThreeVector guidePosition = G4ThreeVector(0., scintFilmLength/2., guideHeight/2. - guideWidth*tan(guideAngle)/2.) + scintFilmPosition;
+  G4ThreeVector guidePosition = G4ThreeVector(0., scintFilmLength/2. + guideWidth/2., guideHeight/2. - guideWidth*tan(guideAngle)/2.) + scintFilmPosition;
   G4ThreeVector SiPMPosition = G4ThreeVector(0., 0., guideHeight/2. + SiPMWidth/2.) + guidePosition;
   
   //
@@ -735,7 +739,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     fAir,
     "World");
 
-  auto worldPV = new G4PVPlacement(nullptr,
+  fWorldPV = new G4PVPlacement(nullptr,
     G4ThreeVector(),
     worldLV,
     "World",                         
@@ -757,7 +761,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     fPolystyrene,  
     "Scintillator");  
 
-  new G4PVPlacement(nullptr,
+  fScintPV = new G4PVPlacement(nullptr,
     scintFilmPosition, 
     scintillatorLV,    
     "Scintillator",   
@@ -767,31 +771,31 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     fCheckOverlaps);
 
   auto guideBodyS = new G4Box("Light Guide Body",
-    scintFilmLength/2., guideWidth/2., guideHeight/2.);
+    guideLength/2., guideWidth/2., guideHeight/2.);
 
   auto guideSubtractantS = new G4Box("Light Guide Subtractant",
-    scintFilmLength/2. + 1*mm, guideWidth*sin(guideAngle), (guideWidth/cos(guideAngle))/2.);
+    guideLength/2. + 1*mm, guideWidth*sin(guideAngle), (guideWidth/cos(guideAngle))/2.);
 
   G4RotationMatrix* guideSubtractantRotation = new G4RotationMatrix(G4ThreeVector(1., 0., 0.), guideAngle);
 
-  auto guideSubtractedS1 = new G4SubtractionSolid("Light Guide", guideBodyS, guideSubtractantS, guideSubtractantRotation, G4ThreeVector(0., guideWidth/2., -guideHeight/2.));
-  auto guideSubtractedS2 = new G4SubtractionSolid("Light Guide",  guideSubtractedS1, scintFilmS, nullptr, scintFilmPosition - guidePosition); 
-  
-  auto guideS = new G4SubtractionSolid("Light Guide", guideSubtractedS2, scintFilmS, nullptr, scintFilmPosition - guidePosition + G4ThreeVector(0., 0., scintFilmThickness));
+  auto guideS = new G4SubtractionSolid("Light Guide", guideBodyS, guideSubtractantS, guideSubtractantRotation, G4ThreeVector(0., guideWidth/2., -guideHeight/2.));
 
   auto guideLV = new G4LogicalVolume(
     guideS,     
     fPolystyrene,  
     "Light Guide");  
-  
-  new G4PVPlacement(nullptr,
-    guidePosition, 
-    guideLV,    
-    "Light Guide",   
-    worldLV,      
-    false,                    
-    0,                        
-    fCheckOverlaps);
+
+  for (int i = 0; i < nSides; i++){
+    auto rot = G4RotationMatrix(G4ThreeVector(0., 0., 1.), i*pi/2.);
+    new G4PVPlacement(G4Transform3D(rot,
+      rot*guidePosition), 
+      guideLV,    
+      "Light Guide",   
+      worldLV,      
+      false,                    
+      i,                        
+      fCheckOverlaps);
+  }
 
   auto SiPMLV = new G4LogicalVolume(
     SiPMS,     
@@ -800,46 +804,60 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
   auto SiPMRotation = new G4RotationMatrix(G4ThreeVector(1., 0., 0.), pi/2.);
 
-  fSiPMPV = new G4PVPlacement(SiPMRotation,
-    SiPMPosition, 
-    SiPMLV,    
-    "SiPM",   
-    worldLV,        
-    false,                    
-    0,                        
-    fCheckOverlaps);
+  for (int i = 0; i < nSides; i++){
+    for (int j = 0; j < nSiPM; j++){
+      auto newSiPMPos = SiPMPosition + G4ThreeVector(scintFilmLength/double(nSiPM + 1)*(j - (nSiPM - 1)/2.), 0., 0.);
+    
+      auto rot = G4RotationMatrix(G4ThreeVector(0., 0., 1.), i*pi/2.);
+      fSiPMPV[i + j*nSides] = new G4PVPlacement(G4Transform3D(SiPMRotation->rotateZ(i*pi/2.),
+        rot*newSiPMPos), 
+        SiPMLV,    
+        "SiPM",   
+        worldLV,
+        false,                    
+        i + j*nSides,                        
+        fCheckOverlaps);
+    }
+  }
 
   #if coating
 
     auto coatingBodyS = new G4Box("Coating Body",
-    (scintFilmLength + 2*coatingThickness)/2., (guideWidth + 2*coatingThickness)/2., (guideHeight + 2*coatingThickness)/2.);
+    (guideLength + 2*coatingThickness)/2., (guideWidth + 2*coatingThickness)/2., (guideHeight + 2*coatingThickness)/2.);
 
     auto coatingSubtractantS1 = new G4Box("Coating Subtractant 1",
-      (scintFilmLength + 2*coatingThickness)/2. + 1*mm, (guideWidth + 2*coatingThickness)*sin(guideAngle) - coatingThickness, ((guideWidth + 2*coatingThickness)/cos(guideAngle))/2.);
+      (guideLength + 2*coatingThickness)/2. + 1*mm, (guideWidth + 2*coatingThickness)*sin(guideAngle) - coatingThickness, ((guideWidth + 2*coatingThickness)/cos(guideAngle))/2.);
 
     G4RotationMatrix* coatingSubtractantRotation = new G4RotationMatrix(G4ThreeVector(1., 0., 0.), guideAngle);
 
     auto coatingFullS = new G4SubtractionSolid("Coating", coatingBodyS, coatingSubtractantS1, coatingSubtractantRotation, G4ThreeVector(0., (guideWidth + 2*coatingThickness)/2., -(guideHeight + 2*coatingThickness)/2.));
 
-    auto coatingSubtractantS2_1 = new G4UnionSolid("coatingSubtractant 2_1", guideSubtractedS1, scintFilmS, nullptr, scintFilmPosition - guidePosition);
-    auto coatingSubtractantS2_2 = new G4SubtractionSolid("coatingSubtractant 2_2", coatingSubtractantS2_1, scintFilmS, nullptr, scintFilmPosition - guidePosition + G4ThreeVector(0., 0., scintFilmThickness));
+    auto coatingSubtractedS= new G4SubtractionSolid("coatingSubtracted 2", coatingFullS, scintFilmS, nullptr, scintFilmPosition - guidePosition);
+    coatingSubtractedS = new G4SubtractionSolid("coatingSubtracted 2", coatingSubtractedS, guideS, nullptr, G4ThreeVector(0., 0., 0.));
+    
+    //This is reapeated for readibility purposes
+    for (int j = 0; j < nSiPM; j++){
+      auto newSiPMPos = SiPMPosition - guidePosition + G4ThreeVector(scintFilmLength/double(nSiPM + 1)*(j - (nSiPM - 1)/2.), 0., 0.);
 
-    auto coatingSubtractionS1 = new G4SubtractionSolid("Coating subtraction 1", coatingFullS, coatingSubtractantS2_2, nullptr, G4ThreeVector(0., 0., 0.));
-    auto coatingSubtractionS2 = new G4SubtractionSolid("Coating subtraction 2", coatingSubtractionS1, SiPMS, SiPMRotation, SiPMPosition - guidePosition);
+      coatingSubtractedS = new G4SubtractionSolid("coatingSubtracted 2", coatingSubtractedS, SiPMS, SiPMRotation, newSiPMPos);
+    }
 
     auto coatingLV = new G4LogicalVolume(
-      coatingSubtractionS2,     
+      coatingSubtractedS,     
       fAlluminum,  
       "Alluminum coating");
 
-    new G4PVPlacement(nullptr,
-      guidePosition, 
-      coatingLV,    
-      "Alluminum coating",   
-      worldLV,        
-      false,                    
-      0,                        
-      fCheckOverlaps);
+    for (int i = 0; i < nSides; i++){
+      auto rot = G4RotationMatrix(G4ThreeVector(0., 0., 1.), i*pi/2.);
+      new G4PVPlacement(G4Transform3D(rot,
+        rot*guidePosition), 
+        coatingLV,    
+        "Light Guide",   
+        worldLV,      
+        false,                    
+        i,                        
+        fCheckOverlaps);
+    }
     
   #endif
 

@@ -8,6 +8,7 @@
 
 # Run menu :
 /gui/addMenu run Run
+/gui/addButton run "single run" "/control/execute mac/run_single.mac"
 /gui/addButton run "short run" "/control/execute mac/run_short.mac"
 /gui/addButton run "long run" "/control/execute mac/run_long.mac"
 

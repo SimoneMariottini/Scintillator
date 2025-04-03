@@ -21,7 +21,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume* Construct() override;
     //void ConstructSDandField() override;
 
-    const G4VPhysicalVolume* GetSiPMPV() const;
+    const G4VPhysicalVolume* GetSiPMPV(G4int i) const;
     const G4VPhysicalVolume* GetWorldPV() const;
     const G4VPhysicalVolume* GetScintPV() const;
 
@@ -32,7 +32,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
     G4VPhysicalVolume* fWorldPV = nullptr;
     G4VPhysicalVolume* fScintPV = nullptr;
-    G4VPhysicalVolume* fSiPMPV = nullptr;
+    G4VPhysicalVolume* fSiPMPV[4*4] = {nullptr};
 
     G4Material* fPolystyrene;
     G4Material* fAir;
@@ -47,7 +47,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 // Inline functions
 //
 
-inline const G4VPhysicalVolume* DetectorConstruction::GetSiPMPV() const { return fSiPMPV; }
+inline const G4VPhysicalVolume* DetectorConstruction::GetSiPMPV(G4int i) const { return fSiPMPV[i]; }
 inline const G4VPhysicalVolume* DetectorConstruction::GetWorldPV() const { return fWorldPV; }
 inline const G4VPhysicalVolume* DetectorConstruction::GetScintPV() const { return fScintPV; }
 

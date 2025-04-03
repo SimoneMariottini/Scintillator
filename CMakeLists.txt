@@ -42,6 +42,7 @@ set(SCINTILLATOR_SCRIPTS
   #mac/plotNtuple.C
   mac/perspective.mac
   mac/vis.mac
+  mac/run_single.mac
   mac/run_short.mac
   mac/run_long.mac
   mac/sr_source.mac

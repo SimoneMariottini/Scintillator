@@ -22,13 +22,15 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
 {
   auto preVolume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
   auto postVolume = step->GetPostStepPoint()->GetTouchableHandle()->GetVolume();
+  for (int i = 0; i<4*4; i++){
+  if(postVolume == fDetConstruction->GetSiPMPV(i)){
 
-  if(postVolume == fDetConstruction->GetSiPMPV()){
+      auto particle = step->GetTrack()->GetParticleDefinition()->GetParticleDefinitionID();
 
-    auto particle = step->GetTrack()->GetParticleDefinition()->GetParticleDefinitionID();
-    if(particle == fOpticalPhoton){
-      fEventAction->AddDetectedPhoton();
-      step->GetTrack()->SetTrackStatus(fStopAndKill);
+      if(particle == fOpticalPhoton){
+       fEventAction->AddDetectedPhoton();
+       step->GetTrack()->SetTrackStatus(fStopAndKill);
+     }
     }
   }
 
