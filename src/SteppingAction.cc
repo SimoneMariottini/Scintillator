@@ -28,8 +28,9 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
       auto particle = step->GetTrack()->GetParticleDefinition()->GetParticleDefinitionID();
 
       if(particle == fOpticalPhoton){
-       fEventAction->AddDetectedPhoton();
-       step->GetTrack()->SetTrackStatus(fStopAndKill);
+        fEventAction->AddDeltaTime(step->GetTrack()->GetGlobalTime());
+        fEventAction->AddDetectedPhoton();
+        step->GetTrack()->SetTrackStatus(fStopAndKill);
      }
     }
   }

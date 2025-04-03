@@ -14,10 +14,13 @@ class EventAction : public G4UserEventAction
     void   EndOfEventAction(const G4Event* event) override;
 
     const void AddDetectedPhoton();
+    const void AddDeltaTime(G4double deltaTime);
 
   private:
 
     G4int fNDetectedPhotons;
+    G4double fSumDeltaTime;
+    G4double fSumDeltaTimeSq;
 };
 
 //
@@ -25,5 +28,6 @@ class EventAction : public G4UserEventAction
 //
 
 inline const void EventAction::AddDetectedPhoton(){ fNDetectedPhotons++; }
+inline const void EventAction::AddDeltaTime(G4double deltaTime){ fSumDeltaTime += deltaTime; fSumDeltaTimeSq += deltaTime*deltaTime;}
 
 #endif
