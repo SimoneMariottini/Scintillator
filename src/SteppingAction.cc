@@ -20,6 +20,15 @@ SteppingAction::SteppingAction(const DetectorConstruction* detConstruction,
 
 void SteppingAction::UserSteppingAction(const G4Step* step)
 {
+  #if ENERGY
+  auto postVolume = step->GetPostStepPoint()->GetTouchableHandle()->GetVolume();
+  //Check that particle is in scintillator volume and is not a photon
+  if(postVolume == fDetConstruction->GetScintPV() && step->GetTrack()->GetParticleDefinition()->GetParticleDefinitionID() != fOpticalPhoton){
+    fEventAction->AddDepositedEnergy(step->GetTotalEnergyDeposit());
+  }
+
+  #endif 
+  #if SCINTILLATION*COLLECTED_PHOTONS
   auto preVolume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
   auto postVolume = step->GetPostStepPoint()->GetTouchableHandle()->GetVolume();
   for (int i = 0; i<4*4; i++){
@@ -34,6 +43,7 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
      }
     }
   }
+  #endif
 
 }
 

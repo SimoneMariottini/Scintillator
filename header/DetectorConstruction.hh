@@ -35,6 +35,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume* fSiPMPV[4*4] = {nullptr};
 
     G4Material* fPolystyrene;
+    G4Material* fVacuum;
     G4Material* fAir;
     G4Material* fPlexiglass;
     G4Material* fAlluminum;

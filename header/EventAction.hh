@@ -15,12 +15,14 @@ class EventAction : public G4UserEventAction
 
     const void AddDetectedPhoton();
     const void AddDeltaTime(G4double deltaTime);
+    const void AddDepositedEnergy(G4double depositedEnergy);
 
   private:
 
     G4int fNDetectedPhotons;
     G4double fSumDeltaTime;
     G4double fSumDeltaTimeSq;
+    G4double fDepositedEnergy;
 };
 
 //
@@ -29,5 +31,6 @@ class EventAction : public G4UserEventAction
 
 inline const void EventAction::AddDetectedPhoton(){ fNDetectedPhotons++; }
 inline const void EventAction::AddDeltaTime(G4double deltaTime){ fSumDeltaTime += deltaTime; fSumDeltaTimeSq += deltaTime*deltaTime;}
+inline const void EventAction::AddDepositedEnergy(G4double depositedEnergy){ fDepositedEnergy += depositedEnergy; }
 
 #endif

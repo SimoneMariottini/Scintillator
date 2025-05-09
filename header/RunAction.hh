@@ -3,6 +3,7 @@
 
 #include "G4UserRunAction.hh"
 #include "globals.hh"
+#include "ConfigFile.hh"
 
 class G4Run;
 

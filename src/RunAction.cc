@@ -24,9 +24,15 @@ RunAction::RunAction()
     
     // Creating ntuple
     analysisManager->CreateNtuple("SiPM", "26MeV mu+");
+    #if ENERGY
+    analysisManager->CreateNtupleDColumn("DepositedEnergy");
+    #endif
+    #if SCINTILLATION*COLLECTED_PHOTONS
     analysisManager->CreateNtupleDColumn("NumberOfIncPhotons");
     analysisManager->CreateNtupleDColumn("MeanDeltaTime");
     analysisManager->CreateNtupleDColumn("SigmaDeltaTime");
+    #endif
+
   
     analysisManager->FinishNtuple();
   }

@@ -13,6 +13,7 @@
 #include "G4StoppingPhysics.hh"
 #include "G4IonPhysics.hh"
 #include "G4NeutronTrackingCut.hh"
+#include "ConfigFile.hh"
 
 class ModularPhysicsList : public G4VModularPhysicsList
 {

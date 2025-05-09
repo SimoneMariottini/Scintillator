@@ -11,6 +11,8 @@
 #include "FTFP_BERT.hh"
 #include "Randomize.hh"
 
+#include "ConfigFile.hh"
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 namespace {

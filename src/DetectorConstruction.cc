@@ -30,8 +30,7 @@
 
 #include "CLHEP/Units/SystemOfUnits.h"
 
-#define design 4
-#define coating 1
+#include "ConfigFile.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -52,6 +51,19 @@ void DetectorConstruction::DefineMaterials()
   auto nistManager = G4NistManager::Instance();
 
   G4double energy[2] = {1.239841939*eV/0.7, 1.239841939*eV/0.4}; //conversion factor divided by blue and red wavelength (in micrometers)
+
+  //
+  // Vacuum
+  //
+
+  fVacuum = nistManager->FindOrBuildMaterial("G4_Galactic");
+
+  G4double rindexVacuum[2] = {1.0, 1.0};
+
+  G4MaterialPropertiesTable *mptVacuum = new G4MaterialPropertiesTable();
+  mptVacuum->AddProperty("RINDEX", energy, rindexVacuum, 2);
+
+  fVacuum->SetMaterialPropertiesTable(mptVacuum);
 
   //
   // Air
@@ -171,54 +183,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     false,                                
     0,                          
     fCheckOverlaps);             
-  /*
-  //
-  // Detector
-  //
-
-  auto detectorS
-    = new G4Box("Detector",     // its name
-                 detX/2., detY/2., detZ/2.); // its size
-
-  auto detectorLV
-    = new G4LogicalVolume(
-                 detectorS,     // its solid
-                 detectorMaterial,  // its material
-                 "Detector");   // its name
-
-  fDetectorPV = new G4PVPlacement(nullptr,  // no rotation
-    G4ThreeVector(0., 0., detZ/2),          // at (0,0,0)
-    detectorLV,                  // its logical volume
-    "Detector",            // its name
-    worldLV,                  // its mother  volume
-    false,                    // no boolean operation
-    0,                        // copy number
-    fCheckOverlaps);          // checking overlaps
-
-  auto coatingS
-    = new G4Box("CoatingBox",     // its name
-                 detX/2., detY/2., coatingThickness/2.); // its size
-
-  auto coatingLV
-    = new G4LogicalVolume(
-                 coatingS,     // its solid
-                 coatingMaterial,  // its material
-                 "Coating");   // its name
-
-  new G4PVPlacement(nullptr,  // no rotation
-    G4ThreeVector(0., 0., -coatingThickness/2.),          // at (0,0,0)
-    coatingLV,                  // its logical volume
-    "Coating",            // its name
-    worldLV,                  // its mother  volume
-    false,                    // no boolean operation
-    0,                        // copy number
-    fCheckOverlaps);          // checking overlaps
-
-  //
-  // Collimator
-  //
-
-  */
 
   //
   // Scintillator
@@ -711,7 +675,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
   auto guideWidth= 1.3*mm;
   auto guideHeight = 2*mm;
-  auto guideAngle = pi/2. - 0.67;
+  auto guideAngle = pi/2. - pi/4.;//- 0.67;
   auto guideLength = scintFilmLength - coatingThickness*4;
   
   auto SiPMHeight = 1.3*mm;
@@ -982,6 +946,66 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
   SiPMLV->SetVisAttributes(G4VisAttributes(G4Colour::Blue()));
   
+
+  #endif
+
+  #if design == 6
+
+  auto scintillatorX = 10*mm;
+  auto scintillatorY = 10*mm;
+  auto scintillatorThickness = 2*mm;
+
+  auto worldSizeX = 5*cm;
+  auto worldSizeY = 5*cm;
+  auto worldSizeZ = 5.2*cm;
+
+  //
+  // World
+  //
+
+  auto worldS = new G4Box( "World",
+    worldSizeX/2., worldSizeY/2., worldSizeZ/2.);
+
+  auto worldLV = new G4LogicalVolume( worldS,           
+    fVacuum,
+    "World");
+
+  fWorldPV = new G4PVPlacement(nullptr,
+    G4ThreeVector(),
+    worldLV,
+    "World",                         
+    nullptr,                            
+    false,                                
+    0,                          
+    fCheckOverlaps);             
+
+  //
+  // Scintillator
+  //
+
+  auto scintS = new G4Box( "Scintillator",
+    scintillatorX/2., scintillatorY/2.,scintillatorThickness/2.);
+
+  auto scintLV = new G4LogicalVolume( scintS,           
+    fPolystyrene,
+    "Scintillator");
+
+  fScintPV = new G4PVPlacement(nullptr,
+    G4ThreeVector(),
+    scintLV,
+    "Scintillator",                         
+    worldLV,                            
+    false,                                
+    0,                          
+    fCheckOverlaps);             
+
+  //
+  // Visualization attributes
+  //
+
+  worldLV->SetVisAttributes(G4VisAttributes::GetInvisible());
+
+  scintLV->SetVisAttributes(G4VisAttributes(G4Colour::Grey()));
 
   #endif
 
