@@ -23,9 +23,20 @@ RunAction::RunAction()
     //
     
     // Creating ntuple
-    analysisManager->CreateNtuple("SiPM", "26MeV mu+");
+    analysisManager->CreateNtuple("SiPM", "26MeV/c mu+");
     #if ENERGY
-    analysisManager->CreateNtupleDColumn("DepositedEnergy");
+    #if MUON 
+    analysisManager->CreateNtupleDColumn("DepositedMuonEnergy");
+    #endif
+    #if POSITRON 
+    analysisManager->CreateNtupleDColumn("DepositedPositronEnergy");
+    #endif
+    #if MUON 
+    analysisManager->CreateNtupleDColumn("EscapedMuons");
+    #endif
+    #if POSITRON 
+    analysisManager->CreateNtupleDColumn("EscapedPositrons");
+    #endif
     #endif
     #if SCINTILLATION*COLLECTED_PHOTONS
     analysisManager->CreateNtupleDColumn("NumberOfIncPhotons");
@@ -40,7 +51,8 @@ RunAction::RunAction()
   //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
   
   void RunAction::BeginOfRunAction(const G4Run*)
-  {
+  { 
+    G4cout << "here" << G4endl;
     
     // Get analysis manager
     auto analysisManager = G4AnalysisManager::Instance();

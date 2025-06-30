@@ -14,3 +14,10 @@
 //Stored information
 #define ENERGY 1
 #define COLLECTED_PHOTONS 0
+
+//Tracked particles
+
+#define MUON 1
+#define POSITRON 1
+
+#define TRACKEDPATICLES MUON + POSITRON

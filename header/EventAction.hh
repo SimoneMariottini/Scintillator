@@ -3,6 +3,7 @@
 
 #include "G4UserEventAction.hh"
 #include "globals.hh"
+#include "ConfigFile.hh"
 
 class EventAction : public G4UserEventAction
 {
@@ -15,14 +16,18 @@ class EventAction : public G4UserEventAction
 
     const void AddDetectedPhoton();
     const void AddDeltaTime(G4double deltaTime);
-    const void AddDepositedEnergy(G4double depositedEnergy);
+    const void AddDepositedEnergy(G4double depositedEnergy, G4int particleID);
+    void SetParticleEscpaped();
 
   private:
 
     G4int fNDetectedPhotons;
     G4double fSumDeltaTime;
     G4double fSumDeltaTimeSq;
-    G4double fDepositedEnergy;
+    G4double fDepositedEnergy[TRACKEDPATICLES] = {};
+    G4bool fParticleEscaped[TRACKEDPATICLES] = {};
+
+    //Particle definitions
 };
 
 //
@@ -31,6 +36,8 @@ class EventAction : public G4UserEventAction
 
 inline const void EventAction::AddDetectedPhoton(){ fNDetectedPhotons++; }
 inline const void EventAction::AddDeltaTime(G4double deltaTime){ fSumDeltaTime += deltaTime; fSumDeltaTimeSq += deltaTime*deltaTime;}
-inline const void EventAction::AddDepositedEnergy(G4double depositedEnergy){ fDepositedEnergy += depositedEnergy; }
+inline const void EventAction::AddDepositedEnergy(G4double depositedEnergy, G4int ID){ fDepositedEnergy[ID] += depositedEnergy; }
 
-#endif
+inline void EventAction::SetParticleEscpaped(){fParticleEscaped[0] = true;}
+
+#endif 

@@ -3,6 +3,7 @@
 
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "globals.hh"
+#include "G4ParticleGun.hh"
 
 class G4GeneralParticleSource;
 class G4Event;
@@ -16,7 +17,8 @@ public:
   void GeneratePrimaries(G4Event* event) override;
 
 private:
-  G4GeneralParticleSource* fParticleGun = nullptr; // G4 particle gun
+  //G4GeneralParticleSource* fParticleGun = nullptr; // G4 particle gun
+  G4ParticleGun* fParticleGun = nullptr;
 };
 
 #endif

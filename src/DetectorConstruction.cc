@@ -58,12 +58,12 @@ void DetectorConstruction::DefineMaterials()
 
   fVacuum = nistManager->FindOrBuildMaterial("G4_Galactic");
 
-  G4double rindexVacuum[2] = {1.0, 1.0};
+  /*G4double rindexVacuum[2] = {1.0, 1.0};
 
   G4MaterialPropertiesTable *mptVacuum = new G4MaterialPropertiesTable();
   mptVacuum->AddProperty("RINDEX", energy, rindexVacuum, 2);
 
-  fVacuum->SetMaterialPropertiesTable(mptVacuum);
+  fVacuum->SetMaterialPropertiesTable(mptVacuum);*/
 
   //
   // Air
@@ -71,19 +71,21 @@ void DetectorConstruction::DefineMaterials()
 
   fAir = nistManager->FindOrBuildMaterial("G4_AIR");
 
-  G4double rindexAir[2] = {1.0, 1.0};
+  /*G4double rindexAir[2] = {1.0, 1.0};
 
   G4MaterialPropertiesTable *mptAir = new G4MaterialPropertiesTable();
   mptAir->AddProperty("RINDEX", energy, rindexAir, 2);
 
-  fAir->SetMaterialPropertiesTable(mptAir);
+  fAir->SetMaterialPropertiesTable(mptAir);*/
 
   //
   // Polystyrene
   //
 
-  fPolystyrene = nistManager->FindOrBuildMaterial("G4_POLYSTYRENE");
-    
+  fPolystyrene = nistManager->FindOrBuildMaterial("G4_POLYSTYRENE"); //G4_PLASTIC_SC_VINYLTOLUENE
+  
+  #if SCINTILLATION
+
   std::vector<G4double> energyLong = {
         2.25*eV, 2.38*eV, 2.43*eV, 2.47*eV, 2.53*eV, 2.695*eV, 2.755*eV, 2.82*eV, 2.91*eV, 2.95*eV
   };
@@ -106,6 +108,8 @@ void DetectorConstruction::DefineMaterials()
   fPolystyrene->SetMaterialPropertiesTable(mptPolystyrene);
   fPolystyrene->GetIonisation()->SetBirksConstant(0.126*mm/MeV);
 
+  #endif
+
   //
   // Plexiglass
   //
@@ -118,7 +122,7 @@ void DetectorConstruction::DefineMaterials()
 
   fAlluminum = nistManager->FindOrBuildMaterial("G4_Al");
 
-  G4double rindexAlluminum[2] = {0.48023, 0.48023};
+  /*G4double rindexAlluminum[2] = {0.48023, 0.48023};
   G4double absLenAlluminum[2] = {1/(1.2035e+6)*cm, 1/(1.2035e+6)*cm};
   G4double reflectivityAlluminum[2] = {0.99711, 0.99711};
 
@@ -127,7 +131,13 @@ void DetectorConstruction::DefineMaterials()
   mptAlluminum->AddProperty("RINDEX", energy, rindexAlluminum, 2);
   mptAlluminum->AddProperty("ABSLENGTH", energy, absLenAlluminum, 2);
 
-  fAlluminum->SetMaterialPropertiesTable(mptAlluminum);
+  fAlluminum->SetMaterialPropertiesTable(mptAlluminum);*/
+
+  //
+  // Mylar
+  //
+
+  fMylar = nistManager->FindOrBuildMaterial("G4_MYLAR");
 
   /*// Alluminum optical surface
   fAlluminumOpticalSurface = new G4OpticalSurface("AlluminumSurface");
@@ -953,11 +963,11 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
   auto scintillatorX = 10*mm;
   auto scintillatorY = 10*mm;
-  auto scintillatorThickness = 2*mm;
+  auto scintillatorThickness = 1*mm;
 
-  auto worldSizeX = 5*cm;
-  auto worldSizeY = 5*cm;
-  auto worldSizeZ = 5.2*cm;
+  auto worldSizeX = scintillatorX + 10*mm;
+  auto worldSizeY = scintillatorY + 10*mm;
+  auto worldSizeZ = 7*cm;
 
   //
   // World
@@ -966,13 +976,13 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   auto worldS = new G4Box( "World",
     worldSizeX/2., worldSizeY/2., worldSizeZ/2.);
 
-  auto worldLV = new G4LogicalVolume( worldS,           
+  fWorldLV = new G4LogicalVolume( worldS,           
     fVacuum,
     "World");
 
   fWorldPV = new G4PVPlacement(nullptr,
     G4ThreeVector(),
-    worldLV,
+    fWorldLV,
     "World",                         
     nullptr,                            
     false,                                
@@ -994,18 +1004,66 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     G4ThreeVector(),
     scintLV,
     "Scintillator",                         
-    worldLV,                            
+    fWorldLV,                            
     false,                                
     0,                          
     fCheckOverlaps);             
 
   //
+  // Air box
+  //
+
+  G4double airBoxThickness = 20*mm;
+
+  auto airS = new G4Box("Air box",
+    scintillatorX/2., scintillatorY/2., airBoxThickness/2.);
+
+  auto airLV = new G4LogicalVolume( airS,           
+    fVacuum,
+    "Air box");
+  
+  auto airPV = new G4PVPlacement(nullptr,
+    G4ThreeVector(0., 0., -airBoxThickness/2. - 10*mm),
+    airLV,
+    "Air box",                         
+    fWorldLV,                            
+    false,                                
+    0,                          
+    fCheckOverlaps);    
+
+  //
+  // Mylar sheet
+  //
+
+  G4double mylarThickness = 0.01*mm;
+  
+  auto mylarS = new G4Box("Mylar sheet",
+    scintillatorX/2., scintillatorY/2., mylarThickness/2.);
+    
+  auto mylarLV = new G4LogicalVolume( mylarS,           
+    fVacuum,
+    "Mylar sheet");
+
+  auto mylarPV = new G4PVPlacement(nullptr,
+    G4ThreeVector(0., 0., -mylarThickness/2. - 5*mm),
+    mylarLV,
+    "Mylar sheet",                         
+    fWorldLV,                            
+    false,                                
+    0,                          
+    fCheckOverlaps);   
+
+  //
   // Visualization attributes
   //
 
-  worldLV->SetVisAttributes(G4VisAttributes::GetInvisible());
+  fWorldLV->SetVisAttributes(G4VisAttributes::GetInvisible());
 
   scintLV->SetVisAttributes(G4VisAttributes(G4Colour::Grey()));
+
+  airLV->SetVisAttributes(G4VisAttributes(G4Colour::Red()));
+
+  mylarLV->SetVisAttributes(G4VisAttributes(G4Colour::Green()));
 
   #endif
 

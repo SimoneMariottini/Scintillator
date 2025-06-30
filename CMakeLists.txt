@@ -44,7 +44,8 @@ set(SCINTILLATOR_SCRIPTS
   mac/vis.mac
   mac/run_single.mac
   mac/run_short.mac
-  mac/run_long.mac
+  mac/run_long_muon.mac
+  mac/run_long_positron.mac
   mac/sr_source.mac
   )
 

@@ -10,7 +10,8 @@
 /gui/addMenu run Run
 /gui/addButton run "single run" "/control/execute mac/run_single.mac"
 /gui/addButton run "short run" "/control/execute mac/run_short.mac"
-/gui/addButton run "long run" "/control/execute mac/run_long.mac"
+/gui/addButton run "long run muon" "/control/execute mac/run_long_muon.mac"
+/gui/addButton run "long run positron" "/control/execute mac/run_long_positron.mac"
 
 # Beam menu :
 /gui/addMenu beam Beam
@@ -18,13 +19,11 @@
 /gui/addButton beam "Fire 1" "/run/beamOn 1"
 /gui/addButton beam "Fire 10" "/run/beamOn 10"
 /gui/addButton beam "Fire 100" "/run/beamOn 100"
+/gui/addButton beam "Fire 1000" "/run/beamOn 1000"
+/gui/addButton beam "Fire 10000" "/run/beamOn 10000"
 
 # Particle menu :
 /gui/addMenu part Particle
-/gui/addButton part "0.5 eV"  "/gps/energy 0.5 eV"
-/gui/addButton part "1 MeV"  "/gps/energy 1 MeV"
-/gui/addButton part "10 MeV"   "/gps/energy 10 MeV"
-/gui/addButton part "100 MeV"  "/gps/energy 100 MeV"
 /gui/addButton part "e-"      "/gps/particle e-"
 /gui/addButton part "e+"      "/gps/particle e+"
 /gui/addButton part "mu-"  "/gps/particle mu-"
@@ -35,6 +34,13 @@
 /gui/addButton part "proton"  "/gps/particle proton"
 /gui/addButton part "gamma" "/gps/particle gamma"
 /gui/addButton part "opticalphoton" "/gps/particle opticalphoton"
+
+# Energy menu :
+/gui/addMenu energy Energy
+/gui/addButton energy "0.5 eV"  "/gps/energy 0.5 eV"
+/gui/addButton energy "1 MeV"  "/gps/energy 1 MeV"
+/gui/addButton energy "10 MeV"   "/gps/energy 10 MeV"
+/gui/addButton energy "100 MeV"  "/gps/energy 100 MeV"
 
 # Beam direction menu:
 /gui/addMenu beamdir Direction
