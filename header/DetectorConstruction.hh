@@ -5,6 +5,7 @@
 #include "G4MaterialPropertiesTable.hh"
 #include "G4Material.hh"
 #include "globals.hh"
+#include "G4LogicalVolume.hh"
 //#include "G4OpticalSurface.hh"
 
 class G4VPhysicalVolume;
@@ -31,6 +32,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume* DefineVolumes();
 
     G4VPhysicalVolume* fWorldPV = nullptr;
+    G4LogicalVolume* fWorldLV = nullptr;
+
     G4VPhysicalVolume* fScintPV = nullptr;
     G4VPhysicalVolume* fSiPMPV[4*4] = {nullptr};
 
@@ -39,6 +42,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     G4Material* fAir;
     G4Material* fPlexiglass;
     G4Material* fAlluminum;
+    G4Material* fMylar;
     //G4OpticalSurface* fAlluminumOpticalSurface;
 
     G4bool fCheckOverlaps = false; // option to activate checking of volumes overlaps

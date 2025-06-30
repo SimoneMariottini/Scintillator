@@ -38,14 +38,21 @@
 #To draw all but some particles
 /vis/filtering/trajectories/create/particleFilter
 /vis/filtering/trajectories/particleFilter-0/add anti_nu_e
+/vis/filtering/trajectories/particleFilter-0/add anti_nu_mu
+/vis/filtering/trajectories/particleFilter-0/add nu_e
+/vis/filtering/trajectories/particleFilter-0/add nu_mu
+/vis/filtering/trajectories/particleFilter-0/add e+
 # To invert the above, drawing all particles, except those selected
 /vis/filtering/trajectories/particleFilter-0/invert true
 
 # To select colour by particle ID:
 /vis/modeling/trajectories/create/drawByParticleID
 /vis/modeling/trajectories/drawByParticleID-0/default/setDrawStepPts true
-/vis/modeling/trajectories/drawByParticleID-0/set mu- blue
-/vis/modeling/trajectories/drawByParticleID-0/set mu+ red
+/vis/modeling/trajectories/drawByParticleID-0/set e- blue
+/vis/modeling/trajectories/drawByParticleID-0/set e+ red
+/vis/modeling/trajectories/drawByParticleID-0/set mu- green
+/vis/modeling/trajectories/drawByParticleID-0/set mu+ yellow
+/vis/modeling/trajectories/drawByParticleID-0/set gamma gray
 /vis/modeling/trajectories/drawByParticleID-0/set opticalphoton orange
 
 # To superimpose all of the events from a given run:

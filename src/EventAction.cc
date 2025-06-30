@@ -14,7 +14,10 @@
 void EventAction::BeginOfEventAction(const G4Event*)
 {
   #if ENERGY
-  fDepositedEnergy = 0.;
+  for (int i = 0; i < TRACKEDPATICLES; i ++){
+    fDepositedEnergy[i] = 0.;
+    fParticleEscaped[i] = false;
+  }
   #endif
   #if SCINTILLATION*COLLECTED_PHOTONS
   fNDetectedPhotons = 0;
@@ -48,13 +51,18 @@ void EventAction::EndOfEventAction(const G4Event* event)
   auto fAnalysisManager = G4AnalysisManager::Instance();
 
   #if ENERGY
-  fAnalysisManager->FillNtupleDColumn(0, fDepositedEnergy);
+  for(int i = 0; i < TRACKEDPATICLES; i++){
+  fAnalysisManager->FillNtupleDColumn(i, fDepositedEnergy[i]);
+  }
+  for(int i = 0; i < TRACKEDPATICLES; i++){
+  fAnalysisManager->FillNtupleDColumn(TRACKEDPATICLES + i, int(fParticleEscaped[i]));
+  }
   #endif
   
   #if SCINTILLATION*COLLECTED_PHOTONS
-  fAnalysisManager->FillNtupleDColumn(ENERGY*1 + 0, fNDetectedPhotons);
-  fAnalysisManager->FillNtupleDColumn(ENERGY*1 + 1, meanDeltaTime);
-  fAnalysisManager->FillNtupleDColumn(ENERGY*1 + 2, sigmaDeltaTime);
+  fAnalysisManager->FillNtupleDColumn(ENERGY*TRACKEDPATICLES + 0, fNDetectedPhotons);
+  fAnalysisManager->FillNtupleDColumn(ENERGY*TRACKEDPATICLES + 1, meanDeltaTime);
+  fAnalysisManager->FillNtupleDColumn(ENERGY*TRACKEDPATICLES + 2, sigmaDeltaTime);
   #endif
   
   fAnalysisManager->AddNtupleRow();

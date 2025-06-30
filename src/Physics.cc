@@ -2,7 +2,7 @@
 
 ModularPhysicsList::ModularPhysicsList(G4int verboseLevel) 
 {
-    RegisterPhysics (new G4EmStandardPhysics_option4()); //EM interactions
+    /*RegisterPhysics (new G4EmStandardPhysics_option4()); //EM interactions
     #if SCINTILLATION
     auto opticalPhysics = new G4OpticalPhysics(verboseLevel);
 
@@ -22,7 +22,7 @@ ModularPhysicsList::ModularPhysicsList(G4int verboseLevel)
     RegisterPhysics(new G4RadioactiveDecayPhysics(verboseLevel));      // Radioactive decay processes
     RegisterPhysics(new G4StoppingPhysics(verboseLevel));              // Stopping physics for ions and muons
     RegisterPhysics(new G4IonPhysics(verboseLevel));                   // Ion interactions
-    RegisterPhysics(new G4NeutronTrackingCut(verboseLevel));           // Tracking cuts for neutrons
+    RegisterPhysics(new G4NeutronTrackingCut(verboseLevel));     */      // Tracking cuts for neutrons
 
 }
 

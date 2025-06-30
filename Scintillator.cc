@@ -1,6 +1,6 @@
 #include "DetectorConstruction.hh"
 #include "ActionInitialization.hh"
-#include "Physics.hh"
+//#include "Physics.hh"
 
 #include "G4RunManagerFactory.hh"
 #include "G4SteppingVerbose.hh"
@@ -8,8 +8,9 @@
 #include "G4UImanager.hh"
 #include "G4UIExecutive.hh"
 #include "G4VisExecutive.hh"
-#include "FTFP_BERT.hh"
+//#include "FTFP_BERT.hh"
 #include "Randomize.hh"
+#include "QGSP_BERT.hh"
 
 #include "ConfigFile.hh"
 
@@ -79,8 +80,10 @@ int main(int argc,char** argv)
   auto detConstruction = new DetectorConstruction();
   runManager->SetUserInitialization(detConstruction);
 
-  auto physicsList = new ModularPhysicsList(verboseLevel);
-  runManager->SetUserInitialization(physicsList);
+  //auto physicsList = new ModularPhysicsList(verboseLevel);
+  //runManager->SetUserInitialization(physicsList);
+  runManager->SetUserInitialization(new QGSP_BERT());
+
 
   auto actionInitialization = new ActionInitialization(detConstruction);
   runManager->SetUserInitialization(actionInitialization);

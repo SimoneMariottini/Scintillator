@@ -1,0 +1,19 @@
+#Simulate 26MeV positive muons
+
+/run/initialize
+
+/gps/particle e+
+
+/gps/position 0. 0.5 -35. mm
+/gps/direction 0 0 1
+
+/gps/ene/type Gauss
+/gps/ene/mono 27.4936624868 MeV   # Mean
+/gps/ene/sigma 0.9238510768 MeV
+
+#/vis/disable
+
+/run/printProgress 100
+/run/verbose 2
+
+/run/beamOn 10000
