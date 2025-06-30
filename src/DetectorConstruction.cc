@@ -675,7 +675,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
   auto guideWidth= 1.3*mm;
   auto guideHeight = 2*mm;
-  auto guideAngle = pi/2. - pi/4.;//- 0.67;
+  auto guideAngle = pi/2. - pi/4.;//-pi/4.;//- 0.67;
   auto guideLength = scintFilmLength - coatingThickness*4;
   
   auto SiPMHeight = 1.3*mm;
